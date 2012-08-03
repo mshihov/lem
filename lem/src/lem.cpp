@@ -21,7 +21,6 @@ int main() {
     std::cout << "sizeof(Const)" << sizeof(Const) << "\n";
     std::cout << "sizeof(Variable)" << sizeof(Variable) << "\n";
     std::cout << "sizeof(Atom)" << sizeof(Atom) << "\n";
-    foo();
     std::cin.get();
 	return 0;
 }
