@@ -65,14 +65,18 @@ private:
 };
 
 class NestedAtom {
-    int left,right;
-    Atom atom;
 public:
     NestedAtom(int l, const Atom& a, int r);
 
-    bool isValue() const;
-    bool isVariable() const;
-    bool isConst() const;
+    bool isValue() const {return atom.isValue();};
+    bool isVariable() const {return atom.isVariable();};
+    bool isConst() const {return atom.isConst();};
+
+    unsigned int getLeft() {return left;};
+    unsigned int getRight() {return right;};
+private:
+    unsigned int left,right;
+    Atom atom;
 };
 
 class Term {
