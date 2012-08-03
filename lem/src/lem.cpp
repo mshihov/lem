@@ -16,6 +16,7 @@ void foo() {
     foo();
     foo();
     foo();
+    foo();
 }
 
 int main() {
