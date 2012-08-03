@@ -15,6 +15,7 @@ void foo() {
     Atom atom(Const(3));
     foo();
     foo();
+    foo();
 }
 
 int main() {
