@@ -13,6 +13,7 @@ using namespace lem;
 
 void foo() {
     Atom atom(Const(3));
+    //what is fetch???
 }
 
 int main() {
