@@ -9,6 +9,18 @@
 
 namespace lem {
 
+bool operator==(const Variable& v1, const Variable& v2) {
+    return ((v1.id == v2.id)&&(v1.step==v2.step));
+}
+
+bool operator!=(const Variable& v1, const Variable& v2) {return !(v1 == v2);}
+
+bool operator>(const Variable& v1, const Variable& v2) {
+    return (v1.step > v2.step)||((v1.step==v2.step) && (v1.id > v2.id));
+}
+
+bool operator<(const Variable& v1, const Variable& v2) {return v2 > v1;}
+
 Atom::Atom(const Atom& a) {
     type = a.type;
 
@@ -69,10 +81,5 @@ void Atom::destructValue() {
 
 void Atom::destructVariable() {}
 
-Term::Term() {
-    // TODO Auto-generated constructor stub
 
-}
-
-
-}
+}  /* namespace lem */

@@ -15,13 +15,15 @@
 namespace lem {
 
 class Const {
-    unsigned int id;
 public:
     Const(unsigned int id_):id(id_) {};
     Const(const Const& c):id(c.id) {};
     unsigned int getId() const {return id;};
+    friend bool operator==(const Const& c1, const Const& c2) {return c1.id == c2.id;};
+    friend bool operator!=(const Const& c1, const Const& c2) {return !(c1==c2);};
+private:
+    unsigned int id;
 };
-
 
 class Variable {
 public:
@@ -30,6 +32,11 @@ public:
 
     unsigned int getId() const {return id;};
     unsigned int getStep() const {return step;};
+    friend bool operator==(const Variable& v1, const Variable& v2);
+    friend bool operator!=(const Variable& v1, const Variable& v2);
+    friend bool operator>(const Variable& v1, const Variable& v2);
+    friend bool operator<(const Variable& v1, const Variable& v2);
+
 private:
     unsigned int id;
     unsigned int step; //of logical computation
@@ -47,6 +54,11 @@ public:
     bool isValue() const {return (type == VALUE);};
     bool isVariable() const {return (type == VARIABLE);};
     bool isConst() const {return (type == CONST);};
+
+    const Value& getValue() {return *((Value*)&buf);};
+    const Const& getConst() {return *((Const*)&buf);};
+    const Variable& getVariable() {return *((Variable*)&buf);};
+
 private:
     enum {VALUE, VARIABLE, CONST} type;
     union {
@@ -72,8 +84,14 @@ public:
     bool isVariable() const {return atom.isVariable();};
     bool isConst() const {return atom.isConst();};
 
-    unsigned int getLeft() {return left;};
-    unsigned int getRight() {return right;};
+    const Value& getValue() {return atom.getValue();};
+    const Const& getConst() {return atom.getConst();};
+    const Variable& getVariable() {return atom.getVariable();};
+
+    unsigned int getLeft() const {return left;};
+    unsigned int getRight() const {return right;};
+    void setleft(unsigned int l) {left = l;}
+    void setRight(unsigned int r) {right = r;}
 private:
     unsigned int left,right;
     Atom atom;
@@ -83,18 +101,11 @@ class Term {
 public:
     Term();
 
-    //possible term states
-    bool isEval() const;
-    bool isFunctor() const;
-    bool isValue() const;
-    bool isVariable() const;
-    bool isConst() const;
-
     //TODO static SHAREDPTR<TermSubstPair> unify(const Term& t1, const Term& t2);
     //static TermSubstPair unify(const TermSubstPair& t1, const TermSubstPair& t2);
 private:
     std::list<NestedAtom> alist;
 };
 
-}
+} /* namespace lem */
 #endif /* TERM_H_ */
