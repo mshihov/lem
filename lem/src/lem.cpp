@@ -6,15 +6,16 @@
 // Description : Logical EMulator
 //============================================================================
 
-#include <iostream>
+#include <utility>
 #include "ip/Term.h"
-
 
 void foo() {
     lem::Atom a(lem::Variable(0,0));
     const lem::Variable& v = a.getVariable();
     v == v;
+    v != v;
 }
+
 
 int main() {
     foo();

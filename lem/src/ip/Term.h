@@ -8,6 +8,7 @@
 #ifndef TERM_H_
 #define TERM_H_
 
+#include "../lem.h"
 #include "Value.h"
 #include<new>
 #include<list>
@@ -33,8 +34,6 @@ public:
     unsigned int getId() const {return id;};
     unsigned int getStep() const {return step;};
     friend bool operator==(const Variable& v1, const Variable& v2);
-    friend bool operator!=(const Variable& v1, const Variable& v2);
-    friend bool operator>(const Variable& v1, const Variable& v2);
     friend bool operator<(const Variable& v1, const Variable& v2);
 
 private:
@@ -106,6 +105,14 @@ public:
 private:
     std::list<NestedAtom> alist;
 };
+
+inline bool operator==(const Variable& v1, const Variable& v2) {
+    return ((v1.id == v2.id)&&(v1.step==v2.step));
+}
+
+inline bool operator<(const Variable& x, const Variable& y) {
+    return (x.step < y.step)||((x.step==y.step) && (x.id < y.id));
+}
 
 } /* namespace lem */
 #endif /* TERM_H_ */

@@ -8,6 +8,7 @@
 #ifndef VALUE_H_
 #define VALUE_H_
 
+#include "../lem.h"
 #include<string>
 
 namespace lem {
