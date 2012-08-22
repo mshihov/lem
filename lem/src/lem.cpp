@@ -14,6 +14,7 @@ void foo() {
     const lem::Variable& v = a.getVariable();
     v == v;
     v != v;
+    lem::Term t;
 }
 
 

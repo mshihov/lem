@@ -9,7 +9,7 @@
 #define TERM_H_
 
 #include "../lem.h"
-#include "Value.h"
+#include "CalculationSymbol.h"
 #include<new>
 #include<list>
 
@@ -43,52 +43,53 @@ private:
 
 class Atom {
 public:
-    Atom(const Value& v);
+    Atom(const CalculationSymbol& v);
     Atom(const Const& c);
     Atom(const Variable& v);
     Atom(const Atom& a);
 
     ~Atom();
 
-    bool isValue() const {return (type == VALUE);};
+    bool isSymbol() const {return (type == SYMBOL);};
     bool isVariable() const {return (type == VARIABLE);};
     bool isConst() const {return (type == CONST);};
 
-    const Value& getValue() {return *((Value*)&buf);};
-    const Const& getConst() {return *((Const*)&buf);};
-    const Variable& getVariable() {return *((Variable*)&buf);};
+    const CalculationSymbol& getSymbol() const {return *((CalculationSymbol*)&buf);};
+    const Const& getConst() const {return *((Const*)&buf);};
+    const Variable& getVariable() const {return *((Variable*)&buf);};
 
 private:
-    enum {VALUE, VARIABLE, CONST} type;
+    enum {SYMBOL, VARIABLE, CONST} type;
     union {
         char variableMem[sizeof(Variable)];
         char constMem[sizeof(Const)];
-        char valueMem[sizeof(Value)];
+        char valueMem[sizeof(CalculationSymbol)];
     } buf;
 
-    void constructValue(const Value& v);
+    void constructSymbol(const CalculationSymbol& v);
     void constructConst(const Const& v);
     void constructVariable(const Variable& v);
 
     void destructConst();
     void destructVariable();
-    void destructValue();
+    void destructSymbol();
 };
 
 class NestedAtom {
 public:
-    NestedAtom(int l, const Atom& a, int r);
+    NestedAtom(const NestedAtom& a):left(a.left),right(a.right),atom(a.atom) {}
+    NestedAtom(int l, const Atom& a, int r):left(l),right(r),atom(a) {}
 
-    bool isValue() const {return atom.isValue();};
-    bool isVariable() const {return atom.isVariable();};
-    bool isConst() const {return atom.isConst();};
+    bool isSymbol() const {return atom.isSymbol();}
+    bool isVariable() const {return atom.isVariable();}
+    bool isConst() const {return atom.isConst();}
 
-    const Value& getValue() {return atom.getValue();};
-    const Const& getConst() {return atom.getConst();};
-    const Variable& getVariable() {return atom.getVariable();};
+    const CalculationSymbol& getSymbol() const {return atom.getSymbol();}
+    const Const& getConst() const {return atom.getConst();}
+    const Variable& getVariable() const {return atom.getVariable();}
 
-    unsigned int getLeft() const {return left;};
-    unsigned int getRight() const {return right;};
+    unsigned int getLeft() const {return left;}
+    unsigned int getRight() const {return right;}
     void setleft(unsigned int l) {left = l;}
     void setRight(unsigned int r) {right = r;}
 private:
@@ -98,12 +99,18 @@ private:
 
 class Term {
 public:
-    Term();
+    Term() {};
+    Term(const Term& t):atoms(t.atoms) {};
+    ~Term() {};
 
-    //TODO static SHAREDPTR<TermSubstPair> unify(const Term& t1, const Term& t2);
-    //static TermSubstPair unify(const TermSubstPair& t1, const TermSubstPair& t2);
+    bool isFunction() const;
+    bool isSymbol() const;
+    bool isVariable() const;
+    bool isConst() const;
+
+    friend class TermUnifier;
 private:
-    std::list<NestedAtom> alist;
+    std::list<NestedAtom> atoms;
 };
 
 inline bool operator==(const Variable& v1, const Variable& v2) {

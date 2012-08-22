@@ -17,14 +17,14 @@ Atom::Atom(const Atom& a) {
         constructConst(*((Const*)p));
     } else if (type == VARIABLE) {
         constructVariable(*((Variable*)p));
-    } else if (type == VALUE) {
-        constructValue(*((Value*)p));
+    } else if (type == SYMBOL) {
+        constructSymbol(*((CalculationSymbol*)p));
     } else {
         throw;
     }
 }
 
-Atom::Atom(const Value& v) {constructValue(v);}
+Atom::Atom(const CalculationSymbol& v) {constructSymbol(v);}
 
 Atom::Atom(const Const& c) {constructConst(c);}
 
@@ -36,10 +36,10 @@ void Atom::constructConst(const Const& c) {
     new(p) Const(c);
 }
 
-void Atom::constructValue(const Value& v) {
-    type = VALUE;
+void Atom::constructSymbol(const CalculationSymbol& v) {
+    type = SYMBOL;
     void* p = (void*)&buf;
-    new(p) Value(v);
+    new(p) CalculationSymbol(v);
 }
 
 void Atom::constructVariable(const Variable& v) {
@@ -53,8 +53,8 @@ Atom::~Atom() {
         destructConst();
     } else if (type == VARIABLE) {
         destructVariable();
-    } else if (type == VALUE) {
-        destructValue();
+    } else if (type == SYMBOL) {
+        destructSymbol();
     } else {
         throw;
     }
@@ -62,12 +62,27 @@ Atom::~Atom() {
 
 void Atom::destructConst() {}
 
-void Atom::destructValue() {
+void Atom::destructSymbol() {
     void* p = (void*)&buf;
-    ((Value*)p)->~Value();
+    ((CalculationSymbol*)p)->~CalculationSymbol();
 }
 
 void Atom::destructVariable() {}
 
+bool Term::isFunction() const {
+    return (atoms.size() > 1);
+}
+
+bool Term::isSymbol() const {
+    return ((atoms.size() == 1) && (atoms.begin()->isSymbol()));
+}
+
+bool Term::isVariable() const {
+    return ((atoms.size() == 1) && (atoms.begin()->isVariable()));
+}
+
+bool Term::isConst() const {
+    return ((atoms.size() == 1) && (atoms.begin()->isConst()));
+}
 
 }  /* namespace lem */
