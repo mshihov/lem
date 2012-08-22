@@ -85,4 +85,8 @@ bool Term::isConst() const {
     return ((atoms.size() == 1) && (atoms.begin()->isConst()));
 }
 
+void Term::erase() {
+	atoms.clear();
+}
+
 }  /* namespace lem */

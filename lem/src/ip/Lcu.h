@@ -39,11 +39,18 @@ public:
     bool isInconsistent() const { return inconsistent; }
     Lcu& operator+= (const Lcu& x);
 
+    bool doConsistent();
+
     friend class TermUnifier;
 private:
-    bool inconsistent;
-    std::list<VariableValue> vals;
-    std::list<VariableEvalue> evals;
+	typedef std::list<VariableValue> value_container;
+	typedef std::list<VariableEvalue> evalue_container;
+
+	bool inconsistent;
+    value_container vals;
+    evalue_container evals;
+
+    void setInconsistent();
 };
 
 } /* namespace lem */

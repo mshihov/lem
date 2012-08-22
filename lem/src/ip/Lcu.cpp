@@ -9,5 +9,11 @@
 
 namespace lem {
 
+void Lcu::setInconsistent() {
+	inconsistent = true;
+	vals.clear();
+	evals.clear();
+}
+
 
 } /* namespace lem */

@@ -84,6 +84,7 @@ public:
     bool isVariable() const {return atom.isVariable();}
     bool isConst() const {return atom.isConst();}
 
+    const Atom& getAtom() const {return atom;}
     const CalculationSymbol& getSymbol() const {return atom.getSymbol();}
     const Const& getConst() const {return atom.getConst();}
     const Variable& getVariable() const {return atom.getVariable();}
@@ -110,7 +111,10 @@ public:
 
     friend class TermUnifier;
 private:
-    std::list<NestedAtom> atoms;
+    typedef std::list<NestedAtom> atom_container;
+    atom_container atoms;
+
+    void erase();
 };
 
 inline bool operator==(const Variable& v1, const Variable& v2) {
