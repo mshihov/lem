@@ -14,8 +14,15 @@
 namespace lem {
 
 class VariableValue {
+public:
+    VariableValue(const Variable& v):variable(v) {}
+    VariableValue(const Variable& v, const Variable& vt):term(vt),variable(v) {}
+    VariableValue(const Variable& v, const Const& ct):term(ct),variable(v) {}
+    VariableValue(const Variable& v, const CalculationSymbol& st):term(st),variable(v) {}
     const Term &getTerm() const { return term; }
     const Variable &getVariable() const { return variable; }
+
+    friend class TermUnifier;
 private:
     Term term;
     Variable variable;
@@ -31,20 +38,22 @@ private:
 
 class Lcu {
 public:
+    typedef std::list<VariableValue> value_container;
+    typedef std::list<VariableEvalue> evalue_container;
+
     Lcu():inconsistent(false) {}
     Lcu(const Lcu& l):inconsistent(l.inconsistent),vals(l.vals),evals(l.evals) {}
     ~Lcu() {}
 
     bool isEmpty() const { return (!isInconsistent() && vals.size() == 0 && evals.size() == 0); }
     bool isInconsistent() const { return inconsistent; }
-    Lcu& operator+= (const Lcu& x);
-
+    bool appendValues(const value_container& unifiers);
     bool doConsistent();
+
+    Lcu& operator+= (const Lcu& x);
 
     friend class TermUnifier;
 private:
-	typedef std::list<VariableValue> value_container;
-	typedef std::list<VariableEvalue> evalue_container;
 
 	bool inconsistent;
     value_container vals;

@@ -26,6 +26,8 @@ public:
     int getInt() const {return mem.intValue;};
     float getFloat() const {return *((float*)mem.valueBuf);};
     const std::string& getString() const {return *((std::string*)mem.intValue);}; //TODO
+
+    friend bool operator==(const CalculationSymbol& x, const CalculationSymbol& y);
 private:
     enum {INT, FLOAT, STRING} type;
     union {

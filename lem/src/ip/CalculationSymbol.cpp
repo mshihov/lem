@@ -39,4 +39,15 @@ void CalculationSymbol::killFloat() { delete (float*)mem.valueBuf; mem.valueBuf 
 
 void CalculationSymbol::killString() { delete (std::string*)mem.valueBuf; mem.valueBuf = 0; }
 
+bool operator==(const CalculationSymbol& x, const CalculationSymbol& y) {
+    if (x.type == y.type) {
+        switch (x.type) {
+        case CalculationSymbol::INT: return (x.getInt() == y.getInt());
+        case CalculationSymbol::FLOAT: return (x.getFloat() == y.getFloat());
+        case CalculationSymbol::STRING: return (x.getString() == y.getString());
+        }
+    }
+    return false;
+}
+
 } /* namespace lem */

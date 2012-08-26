@@ -6,20 +6,31 @@
 // Description : Logical EMulator
 //============================================================================
 
-#include <utility>
-#include "ip/Term.h"
+#include <iostream>
+#include "utils/Ptr.h"
 
-void foo() {
-    lem::Atom a(lem::Variable(0,0));
-    const lem::Variable& v = a.getVariable();
-    v == v;
-    v != v;
-    lem::Term t;
+class C {
+public:
+    C() {std::cout << "C constructed\n";}
+    ~C() {std::cout << "C destroyed\n";}
+};
+
+
+
+lem::Ptr<C> foo() {
+    std::cout << "foo()";
+    lem::Ptr<C> p(new C());
+    return p;
 }
 
+void bar() {
+    std::cout << "bar(): call foo()";
+    lem::Ptr<C> p = foo();
+    std::cout << "exit bar()";
+}
 
 int main() {
-    foo();
+    bar();
 	return 0;
 }
 

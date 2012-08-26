@@ -24,7 +24,7 @@ Atom::Atom(const Atom& a) {
     }
 }
 
-Atom::Atom(const CalculationSymbol& v) {constructSymbol(v);}
+Atom::Atom(const CalculationSymbol& s) {constructSymbol(s);}
 
 Atom::Atom(const Const& c) {constructConst(c);}
 
@@ -85,7 +85,7 @@ bool Term::isConst() const {
     return ((atoms.size() == 1) && (atoms.begin()->isConst()));
 }
 
-void Term::erase() {
+void Term::clear() {
 	atoms.clear();
 }
 

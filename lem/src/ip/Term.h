@@ -28,8 +28,8 @@ private:
 
 class Variable {
 public:
-    Variable(unsigned int id_, unsigned int step_):id(id_),step(step_) {};
-    Variable(const Variable& v):id(v.id),step(v.step) {};
+    Variable(unsigned int id_, unsigned int step_):id(id_),step(step_) {}
+    Variable(const Variable& v):id(v.id),step(v.step) {}
 
     unsigned int getId() const {return id;};
     unsigned int getStep() const {return step;};
@@ -43,7 +43,7 @@ private:
 
 class Atom {
 public:
-    Atom(const CalculationSymbol& v);
+    Atom(const CalculationSymbol& s);
     Atom(const Const& c);
     Atom(const Variable& v);
     Atom(const Atom& a);
@@ -77,6 +77,9 @@ private:
 
 class NestedAtom {
 public:
+    NestedAtom(const CalculationSymbol& s):left(0),right(0),atom(s) {}
+    NestedAtom(const Const& c):left(0),right(0),atom(c) {}
+    NestedAtom(const Variable& v):left(0),right(0),atom(v) {}
     NestedAtom(const NestedAtom& a):left(a.left),right(a.right),atom(a.atom) {}
     NestedAtom(int l, const Atom& a, int r):left(l),right(r),atom(a) {}
 
@@ -102,6 +105,9 @@ class Term {
 public:
     Term() {};
     Term(const Term& t):atoms(t.atoms) {};
+    Term(const Variable& v) {atoms.push_back(NestedAtom(0, v, 0));}
+    Term(const Const& c) {atoms.push_back(NestedAtom(0, c, 0));}
+    Term(const CalculationSymbol& s) {atoms.push_back(NestedAtom(0, s, 0));}
     ~Term() {};
 
     bool isFunction() const;
@@ -114,7 +120,7 @@ private:
     typedef std::list<NestedAtom> atom_container;
     atom_container atoms;
 
-    void erase();
+    void clear();
 };
 
 inline bool operator==(const Variable& v1, const Variable& v2) {
