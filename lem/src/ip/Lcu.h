@@ -19,6 +19,8 @@ public:
     VariableValue(const Variable& v, const Variable& vt):term(vt),variable(v) {}
     VariableValue(const Variable& v, const Const& ct):term(ct),variable(v) {}
     VariableValue(const Variable& v, const CalculationSymbol& st):term(st),variable(v) {}
+    VariableValue(const Variable& v, const Term& t):term(t),variable(v) {}
+
     const Term &getTerm() const { return term; }
     const Variable &getVariable() const { return variable; }
 
@@ -39,10 +41,12 @@ private:
 class Lcu {
 public:
     typedef std::list<VariableValue> value_container;
+    typedef typename std::list<VariableValue>::value_type value_type;
     typedef std::list<VariableEvalue> evalue_container;
 
     Lcu():inconsistent(false) {}
     Lcu(const Lcu& l):inconsistent(l.inconsistent),vals(l.vals),evals(l.evals) {}
+    Lcu(const value_container& unifiers) { appendValues(unifiers); }
     ~Lcu() {}
 
     bool isEmpty() const { return (!isInconsistent() && vals.size() == 0 && evals.size() == 0); }
@@ -54,12 +58,12 @@ public:
 
     friend class TermUnifier;
 private:
-
 	bool inconsistent;
     value_container vals;
     evalue_container evals;
 
     void setInconsistent();
+    bool appendValue(const value_type& value);
 };
 
 } /* namespace lem */

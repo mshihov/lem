@@ -15,21 +15,21 @@ namespace lem {
 
 class TermUnifier {
 public:
-    typedef typename Term::atom_container atom_container;
     typedef typename Lcu::value_container value_container;
 
     TermUnifier(const Term& x, const Term& y) {doUnification(x, y);}
     ~TermUnifier() {}
 
-    const Term getTerm() const {return term;}
-    const value_container getUnifiers() const {return unifiers;}
+    const Term &getTerm() const {return term;}
+    const value_container &getUnifiers() const {return unifiers;}
 
     bool isUnificationFailed() {return (term.atoms.size() == 0);}
+    bool termsIsEquals() {return (unifiers.size() == 0);}
 private:
+    typedef typename Term::atom_container atom_container;
 
     Term term;
     value_container unifiers;
-
 
     void doUnification(const Term& x, const Term& y);
     void failUnification();
