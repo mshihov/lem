@@ -15,14 +15,14 @@ namespace lem {
 template<class T>
 class Ptr {
 public:
-    Ptr();
-    Ptr(T *p);
+    explicit Ptr(T *p);
     Ptr(const Ptr& p);
-    Ptr& operator=(const Ptr<T>& p);
-    T* operator->();
-    T& operator*();
+    Ptr& operator=(const Ptr& p);
+    T* operator->() const;
+    T& operator*() const;
     ~Ptr();
 private:
+    Ptr();
     std::pair<unsigned int, T*> *meta;
     void release();
 };
@@ -44,7 +44,7 @@ Ptr<T>::Ptr(const Ptr<T>& p) {
 }
 
 template<class T>
-Ptr<T>& Ptr<T>::operator=(const Ptr<T>& p) {
+Ptr<T>& Ptr<T>::operator= (const Ptr& p) {
     if (meta == p.meta) {
         if (meta != 0 && this != &p) {
             meta->first++;
@@ -58,15 +58,16 @@ Ptr<T>& Ptr<T>::operator=(const Ptr<T>& p) {
             meta->first++;
         }
     }
+    return *this;
 }
 
 template<class T>
-T* Ptr<T>::operator->() {
+T* Ptr<T>::operator->() const {
     return meta->second;
 }
 
 template<class T>
-T& Ptr<T>::operator*() {
+T& Ptr<T>::operator*() const {
     return *(meta->second);
 }
 

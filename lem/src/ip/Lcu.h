@@ -10,6 +10,7 @@
 
 #include <list>
 #include "Term.h"
+#include "../utils/Ptr.h"
 
 namespace lem {
 
@@ -40,18 +41,19 @@ private:
 
 class Lcu {
 public:
-    typedef std::list<VariableValue> value_container;
-    typedef typename std::list<VariableValue>::value_type value_type;
-    typedef std::list<VariableEvalue> evalue_container;
+    typedef VariableValue value_type;
+    typedef Ptr<value_type> value_ptr_type;
+    typedef std::list<value_ptr_type> value_container_type;
+    typedef std::list<VariableEvalue> evalue_container_type;
 
     Lcu():inconsistent(false) {}
     Lcu(const Lcu& l):inconsistent(l.inconsistent),vals(l.vals),evals(l.evals) {}
-    Lcu(const value_container& unifiers) { appendValues(unifiers); }
+    Lcu(const value_container_type& unifiers) { appendValues(unifiers); }
     ~Lcu() {}
 
     bool isEmpty() const { return (!isInconsistent() && vals.size() == 0 && evals.size() == 0); }
     bool isInconsistent() const { return inconsistent; }
-    bool appendValues(const value_container& unifiers);
+    bool appendValues(const value_container_type& unifiers);
     bool doConsistent();
 
     Lcu& operator+= (const Lcu& x);
@@ -59,11 +61,12 @@ public:
     friend class TermUnifier;
 private:
 	bool inconsistent;
-    value_container vals;
-    evalue_container evals;
+    value_container_type vals;
+    evalue_container_type evals;
 
     void setInconsistent();
-    bool appendValue(const value_type& value);
+    bool appendValue(const value_ptr_type& value);
+    bool orderedInstall(const value_ptr_type& v, value_container_type& stack);
 };
 
 } /* namespace lem */

@@ -77,18 +77,17 @@ void TermUnifier::unificateVariables(unsigned int l, const Variable& x, const Va
         std::swap(px, py);
     }
 
-    VariableValue unifier(*px, *py);
-    unifiers.push_back(unifier);
+    lcuItems.push_back(value_ptr_type(new value_type(*px, *py)));
     term.atoms.push_back(NestedAtom(l,*px,r));
 }
 
 void TermUnifier::unificateVariableAndConstant(unsigned int l, const Variable& x, const Const& y, unsigned int r) {
-    unifiers.push_back(VariableValue(x, y));
+    lcuItems.push_back(value_ptr_type(new value_type(x, y)));
     term.atoms.push_back(NestedAtom(l,x,r));
 }
 
 void TermUnifier::unificateVariableAndSymbol(unsigned int l, const Variable& x, const CalculationSymbol& y, unsigned int r) {
-    unifiers.push_back(VariableValue(x, y));
+    lcuItems.push_back(value_ptr_type(new value_type(x, y)));
     term.atoms.push_back(NestedAtom(l,x,r));
 }
 
@@ -118,18 +117,18 @@ void TermUnifier::unificateVariableAndFunction(
         typename atom_container::const_iterator& ey
         ) {
     unsigned int balance = iy->getLeft() - varAtom.getLeft();
-    VariableValue unifier(varAtom.getVariable());
+    value_ptr_type pLcuItem(new value_type(varAtom.getVariable()));
 
     if (iy->getRight() >= balance) {
         if ((iy->getRight() - balance) != varAtom.getRight()) {
             failUnification(); return;
         }
-        unifier.term.atoms.push_back(NestedAtom(balance, iy->getAtom(), balance));
-        unifiers.push_back(unifier);
+        pLcuItem->term.atoms.push_back(NestedAtom(balance, iy->getAtom(), balance));
+        lcuItems.push_back(pLcuItem);
         term.atoms.push_back(varAtom);
         return;
     }
-    unifier.term.atoms.push_back(NestedAtom(balance, iy->getAtom(), iy->getRight()));
+    pLcuItem->term.atoms.push_back(NestedAtom(balance, iy->getAtom(), iy->getRight()));
     balance -= iy->getRight();
 
     while(true) {
@@ -140,19 +139,20 @@ void TermUnifier::unificateVariableAndFunction(
             if ((iy->getRight() - balance) != varAtom.getRight()) {
                 failUnification(); return;
             }
-            unifier.term.atoms.push_back(NestedAtom(iy->getLeft(), iy->getAtom(), balance));
-            unifiers.push_back(unifier);
+            pLcuItem->term.atoms.push_back(NestedAtom(iy->getLeft(), iy->getAtom(), balance));
+            lcuItems.push_back(pLcuItem);
             term.atoms.push_back(varAtom);
             return;
         }
-        unifier.term.atoms.push_back(NestedAtom(*iy));
+        pLcuItem->term.atoms.push_back(NestedAtom(*iy));
         balance -= iy->getRight();
     }
 }
 
 void TermUnifier::failUnification() {
+    setBad(true);
 	term.clear();
-	unifiers.clear();
+	lcuItems.clear();
 }
 
 } /* namespace lem */

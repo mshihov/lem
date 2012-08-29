@@ -15,21 +15,24 @@ namespace lem {
 
 class TermUnifier {
 public:
-    typedef typename Lcu::value_container value_container;
+    typedef typename Lcu::value_container_type value_container_type;
 
-    TermUnifier(const Term& x, const Term& y) {doUnification(x, y);}
+    TermUnifier(const Term& x, const Term& y) {setBad(false); doUnification(x, y);}
     ~TermUnifier() {}
 
     const Term &getTerm() const {return term;}
-    const value_container &getUnifiers() const {return unifiers;}
+    const value_container_type &getLcuItems() const {return lcuItems;}
 
-    bool isUnificationFailed() {return (term.atoms.size() == 0);}
-    bool termsIsEquals() {return (unifiers.size() == 0);}
+    bool isBad() {return bad;}
+    bool isEmpty() {return !isBad() && (lcuItems.size() == 0);}
 private:
+    typedef typename Lcu::value_type value_type;
+    typedef typename Lcu::value_ptr_type value_ptr_type;
     typedef typename Term::atom_container atom_container;
 
+    bool bad;
     Term term;
-    value_container unifiers;
+    value_container_type lcuItems;
 
     void doUnification(const Term& x, const Term& y);
     void failUnification();
@@ -45,6 +48,8 @@ private:
     void unificateConstants(unsigned int l, const Const& x, const Const& y, unsigned int r);
     void unificateConstantAndSymbol(unsigned int l, const Const& x, const CalculationSymbol& y, unsigned int r);
     void unificateSymbols(unsigned int l, const CalculationSymbol& x, const CalculationSymbol& y, unsigned int r);
+
+    void setBad(bool v) {bad = v;}
 };
 
 } /* namespace lem */
