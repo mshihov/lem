@@ -66,7 +66,8 @@ private:
 
     void setInconsistent();
     bool appendValue(const value_ptr_type& value);
-    bool orderedInstall(const value_ptr_type& v, value_container_type& stack);
+    bool orderedInstall(value_container_type& valStack);
+    bool installNewItems(value_container_type& valStack);
 };
 
 } /* namespace lem */
