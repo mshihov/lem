@@ -2,7 +2,7 @@
  * lem.h
  *
  *  Created on: 14.08.2012
- *      Author: mirrlis
+ *      Author: mirrlis foo
  */
 
 #ifndef LEM_H_
